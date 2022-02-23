@@ -1,0 +1,43 @@
+name: 'CI'
+
+on:
+  push:
+    branches:
+    - main
+    - features/**
+    tags:
+    - '*.*.*'
+  pull_request:
+
+env:
+  DOTNET_NOLOGO: true
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on: [ubuntu-latest, windows-2022]
+    name: ${{ matrix.runs-on }}
+    runs-on: ${{ matrix.runs-on }}
+    steps:
+      - uses: actions/checkout@af513c7a016048ae468971c52ed77d9562c7c819
+      - run: dotnet --info
+
+      - if: contains(matrix.runs-on, 'ubuntu')
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+        run: |
+          base64 --decode <<< "$SIGNING_KEY" > key.snk
+          echo $(ls)
+          chmod +x build.sh
+          ./build.sh
+          chmod +x publish.sh
+          ./publish.sh "$NUGET_API_KEY"
+      - if: matrix.runs-on == 'windows-2022'
+        shell: pwsh
+        run: |
+          "$env:SIGNING_KEY" > encoded_key.txt
+          certutil -decode encoded_key.txt key.snk
+          ./build.ps1

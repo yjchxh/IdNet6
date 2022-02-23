@@ -1,0 +1,1 @@
+start ./src/IdNet6/IdNet6.sln

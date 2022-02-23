@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\..\key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,6 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\..\key.snk">
+      <Link>key.snk</Link>
+    </None>
     <None Include="compilerconfig.json" />
   </ItemGroup>
 

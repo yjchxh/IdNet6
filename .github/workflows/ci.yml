@@ -29,8 +29,6 @@ jobs:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
         run: |
-          base64 --decode <<< "$SIGNING_KEY" > key.snk
-          echo $(ls)
           chmod +x build.sh
           ./build.sh
           chmod +x publish.sh
@@ -38,6 +36,4 @@ jobs:
       - if: matrix.runs-on == 'windows-2022'
         shell: pwsh
         run: |
-          "$env:SIGNING_KEY" > encoded_key.txt
-          certutil -decode encoded_key.txt key.snk
           ./build.ps1
